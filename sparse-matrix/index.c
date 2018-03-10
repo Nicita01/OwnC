@@ -40,32 +40,12 @@ int main() {
       printf("Номер столбца:\n");
       scanf("%i", &y);
       int r = getValue(x, y, strLen, countStr, arr);
-      if (r != 'E')
-      printf("%i ", r);
+      if (r != 'E') {
+        printf("%i ", r);
+      }
     }
-    // DEBUG ::
-    if (strcmp(str, "/dd") == 0) {
+    if (strcmp(str, "/print") == 0) {
       print(strLen, countStr, arr);
-      int t = 0;
-      // printf("%i ", getValue(3, 1, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 2, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 3, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 4, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 5, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 6, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 7, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 8, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 9, strLen, countStr, arr));
-      // printf("%i ", getValue(3, 10, strLen, countStr, arr));
-      // while (t <= strLen * countStr ) {
-      //   int r = getValue(t / countStr + 1, t % countStr, strLen, countStr, arr);
-      //   if (r != 'E')
-      //   printf("%i ", r);
-      //   t++;
-      // }
-    }
-    if (strcmp(str, "/ddd") == 0) {
-      printf("%i\n",  arr[1]);
     }
   }
   return 0;
@@ -102,7 +82,6 @@ int getValue(int x, int y, int strLen, int countStr, int* arr) {
   if ((x % 2 == 1 && y % 2 == 1) ||
   (x % 2 == 0 && y % 2 == 0)) {
     if (x > countStr) {
-      //printf("В матрице %i строкЗАПРОС:%i", countStr, x);
       return 'E';
     }
     if (y > strLen) {
@@ -111,7 +90,6 @@ int getValue(int x, int y, int strLen, int countStr, int* arr) {
     }
 
     int index = arrIndex(x, y, strLen);
-    //printf(" IN%i ", index);
     return arr[index];
   } else {
      if (x > countStr) {
@@ -122,15 +100,8 @@ int getValue(int x, int y, int strLen, int countStr, int* arr) {
       printf("В матрице %i столбцов", strLen);
       return 'E';
     }
-    return 0;
   }
 }
-
-// bool addEmptyStr() {
-//   for (let countEl = 0; countEl < strLen; countEl++) {
-//     arr
-//   }
-// }
 
 int print(int strLen, int countStr, int* arr) {
   for (int curElIndex = 1; curElIndex <= strLen * countStr; curElIndex++) {
