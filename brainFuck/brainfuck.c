@@ -2,16 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* interpret(char* string) {
-//printf("On start:\n");
-for (int counter = 0; counter < 55; counter++) {
-    printf("%c", string[counter]);
-  }
-// printf("\n");
+char* interpret(char* source) {
 
-  // 1) Delete left symbols
-  int length = 0;
-  int shift = 1;
+  char string[strlen(source) + 2];
+  for(int count = 0; count < strlen(source); count++) {
+    string[count] = source[count];
+  }
+
+  printf("start\n%sEND\n\n", string);
+  int length = 0; 
   while (string[length]){
     switch (string[length]) {
       case '>':
@@ -21,210 +20,198 @@ for (int counter = 0; counter < 55; counter++) {
       case '.':
       case ',':
       case '[':
-      case ']':
+      case ']': {
         break;
-      default:
-        printf("");
-        int rewriter = length;
-        while(string[rewriter + 1]) {
-          string[rewriter] = string[rewriter + 1];
-          rewriter++;
+      }
+      default: {
+        int rewriteCounter = length;
+        while(string[rewriteCounter + 1]) {
+          string[rewriteCounter] = string[rewriteCounter + 1];
+          rewriteCounter++;
         }
         string[strlen(string) - 1] = 0;
         length--;
         break;
+      }
     }
     length++;
-
   }
-  printf("After left symbols deleting:\n");
-  printf("%s\n", string);
-  printf("len %i\n", length);
 
+ printf("leftDelete\n%sEND\n\n", string);
+ printf("LENGTH %i\n", length);
 
-  // On this step we have string with good symbols only
-
-  // 2) Error, if count("[") != count("]"):
-  int left = 0;
-  int right = 0;
-  int cur = 0;
-  while (string[cur]){
-    switch (string[cur]) {
-      case '[':
-        ++left;
+  int bracketCount = 0;
+  int curSymbolIndex = 0;
+  while (string[curSymbolIndex]){
+    switch (string[curSymbolIndex]) {
+      case '[': {
+        bracketCount++;
         break;
-      case ']':
-        ++right;
+      }
+      case ']': {
+        if (bracketCount-- == 0) {
+          static char err[] = "Error!";
+          return err;
+        }
         break;
+      }
     }
-    cur++;
-  }  
-  if (left == right) {
-  } else {
+    curSymbolIndex++;
+  }
+  if (bracketCount != 0) {
     static char err[] = "Error!";
     return err;
   }
-
-  // 3) Delete []; +- etc
-   for (int counter = 1; counter < length; counter++) {
-    if(string[counter - 1] == '[' && string[counter] == ']' ||
-    string[counter - 1] == '-' && string[counter] == '+' ||
-    string[counter - 1] == '+' && string[counter] == '-' ||
-    string[counter - 1] == '>' && string[counter] == '<' ||
-    string[counter - 1] == '<' && string[counter] == '>' ) {
-      int rewriter = counter;
-      while(string[rewriter + 1]) {
-        string[rewriter - 1] = string[rewriter + 1];
-        rewriter++;
+  
+  curSymbolIndex = 1;
+  while (string[curSymbolIndex]){
+    if (
+      string[curSymbolIndex - 1] == '[' && string[curSymbolIndex] == ']' ||
+      string[curSymbolIndex - 1] == '-' && string[curSymbolIndex] == '+' ||
+      string[curSymbolIndex - 1] == '+' && string[curSymbolIndex] == '-' ||
+      string[curSymbolIndex - 1] == '>' && string[curSymbolIndex] == '<' ||
+      string[curSymbolIndex - 1] == '<' && string[curSymbolIndex] == '>' 
+    ) {
+      int rewriteCounter = curSymbolIndex - 1;
+      while(string[rewriteCounter + 2]) {
+        string[rewriteCounter] = string[rewriteCounter + 2];
+        rewriteCounter++;
       }
-      string[strlen(string) - 1] = 0;
-      string[strlen(string) - 1] = 0;
+      string[strlen(string) - 2] = 0;
       length -= 2;
-      counter -= 2;
+      curSymbolIndex -= 2;
     }
+    curSymbolIndex += 1;
   }
 
-  printf("Before lincing:\n%s\n", string);
 
-  char* res = (char*) malloc(10000);
-  char nextCommand[] = ";\n";
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ GOOD ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
 
-  int shifter = 0;
-  for (int cur = 0; cur < length; cur++) {
+
    
-    switch (string[cur]) {
-      case '+':
-        res[strlen(res)] = '*';
-        res[strlen(res)] = 'p';
-        res[strlen(res)] = ' ';
-        res[strlen(res)] = '+';
-        res[strlen(res)] = '=';
-        res[strlen(res)] = ' ';
-        res[strlen(res)] = 0;
-        break;
-      case '-':
-        printf("");
-        res[strlen(res)] = '*';
-        res[strlen(res)] = 'p';
-        res[strlen(res)] = ' ';
-        res[strlen(res)] = '-';
-        res[strlen(res)] = '=';
-        res[strlen(res)] = ' ';
-        res[strlen(res)] = 0;
-        break;
-      case '>':
-        printf("");
-        res[strlen(res)] = 'p';
-        res[strlen(res)] = ' ';
-        res[strlen(res)] = '+';
-        res[strlen(res)] = '=';
-        res[strlen(res)] = ' ';
-         res[strlen(res)] = 0;
-         break;
-      case '<':
-        printf("");
-        res[strlen(res)] = 'p';
-        res[strlen(res)] = ' ';
-        res[strlen(res)] = '-';
-        res[strlen(res)] = '=';
-        res[strlen(res)] = ' ';
-        res[strlen(res)] = 0;
-        break;   
-    }
+  printf("optimize\n%sEND\n\n\n\n", string); 
+  int count_of_symbols_conv = 120;
+  int sizeRes = count_of_symbols_conv*length;
+  char res[sizeRes];
 
-
-    switch(string[cur]) {
-      case '+':
-      case '-':
-      case '<':
-      case '>':
-        printf("");
-        int counterSameSymbols = 1;
-        int curGlob = cur;
-        char elementInk = string[cur + 1];
-        while (elementInk == string[curGlob]) {
-          counterSameSymbols++;
-          elementInk = string[curGlob + counterSameSymbols];
-          cur++;
-        }
-        char* stringCur = (char*)malloc(20);
-        sprintf(stringCur, "%i", counterSameSymbols);
-        int curSymb = 0;
-        while(stringCur[curSymb]){
-        res[strlen(res)] = stringCur[curSymb];
-          curSymb++;
-      }
-    }
-    switch(string[cur]) {
-      case ',':
-        printf("");
-        char forZ[] = "*p = getchar()";
-        int flagTemp3 = 0;
-        while (flagTemp3 < 14) {
-          res[strlen(res)] = forZ[flagTemp3++];
-          
-        }
-        // cur++;
-        break;
-      case '.':
-        printf("");
-        char forT[] = "putchar(*p)";
-        int flagTemp2 = 0;
-        while (flagTemp2 < 11) {
-          res[strlen(res)] = forT[flagTemp2++];
-        }
-          // cur++;
-       
-        break;
-      case '[':
-        printf("");
-        char forL[] = "if (*p) do {";
-        int flagTemp4 = 0;
-        while (flagTemp4 < 12) {
-          res[strlen(res)] = forL[flagTemp4++];
-        }
-        // cur++;
-        break;
-        /////////
-      case ']':
-        printf("");
-        char forR[] = "} while (*p)";
-        int flagTemp5 = 0;
-        while (flagTemp5 < 12) {
-          res[strlen(res)] = forR[flagTemp5++];
-        }
-
-          // cur++;
-        break;
-    }
-    
-      int flagTemp = 0;
-      switch(string[cur]){
-        case '[':
-          res[strlen(res)] = '\n';
-          break;
-        default:
-          while (flagTemp < 3) {
-            res[strlen(res)] = nextCommand[flagTemp++];
-          }
-      }
-
+  for (int clearingCounter = sizeRes; clearingCounter> 0; clearingCounter--) {
+    res[clearingCounter - 1] = 0;
   }
-//   printf("%s\n", res);
-//   int lastCounter = 0;
-//   static char ress[10000];
-// while(lastCounter < strlen(string)){
-//   ress[lastCounter] = res[lastCounter];
-//   lastCounter++;
-// }
-//     return ress;
-return res;
+ 
+  curSymbolIndex = 0;
+  int shiftByBracket = 0;
+  printf("%c", sizeRes);
+  while (string[curSymbolIndex]){
+  
+    if (string[curSymbolIndex] == ']') {
+      shiftByBracket--;
+    }
+    for (int shiftCounter = 0; shiftCounter <= shiftByBracket * 2; shiftCounter++ ) {
+      res[strlen(res)] = ' ';
+    }
+    char sumStr[] = "*p += ";
+    char derStr[] = "*p -= ";
+    char pointRightStr[] = "p += ";
+    char pointLeftStr[] = "p -= ";
+    char putStr[] = "putchar(*p);";
+    char getStr[] = "*p = getchar(*p);";
+    char brackeLeftStr[] = "if (*p) do {";
+    char brakeRightStr[] = "} while (*p);";
+    int countWriteSymbol = 0;
+    switch (string[curSymbolIndex]) {
+      case '+': {
+        for (; countWriteSymbol < 6; countWriteSymbol++) {
+          res[strlen(res)] = sumStr[countWriteSymbol];
+        }
+        break;
+      }
+      case '-': {
+        for (;countWriteSymbol < 6; countWriteSymbol++) {
+          res[strlen(res)] = derStr[countWriteSymbol];
+        }
+        break;
+      }
+      case '>': {
+        for (;countWriteSymbol < 5; countWriteSymbol++) {
+          res[strlen(res)] = pointRightStr[countWriteSymbol];
+        }
+        break;
+      }
+      case '<': {
+        for (;countWriteSymbol < 5; countWriteSymbol++) {
+          res[strlen(res)] = pointLeftStr[countWriteSymbol];
+        }
+        break;
+      }
+      case '.': {
+        for (;countWriteSymbol < 12; countWriteSymbol++) {
+          res[strlen(res)] = putStr[countWriteSymbol];
+        }
+        break;
+      }
+      case ',': {
+        for (;countWriteSymbol < 17; countWriteSymbol++) {
+          res[strlen(res)] = getStr[countWriteSymbol];
+        }
+        break;
+      }
+      case ']': {
+        for (;countWriteSymbol < 13; countWriteSymbol++) {
+          res[strlen(res)] = brakeRightStr[countWriteSymbol];
+        }
+        break;
+      }
+      case '[': {
+        for (;countWriteSymbol < 12; countWriteSymbol++) {
+          res[strlen(res)] = brackeLeftStr[countWriteSymbol];
+        }
+        shiftByBracket++;
+        break;
+      }
+    }
+
+    switch (string[curSymbolIndex]) {
+      case '+':
+      case '-':
+      case '>':
+      case '<': {
+        char curSymbol = string[curSymbolIndex];
+        int symbolSameIndex = 1;
+        while (string[curSymbolIndex + symbolSameIndex] == curSymbol) {
+          symbolSameIndex++;
+        }
+        curSymbolIndex += symbolSameIndex - 1;
+        char* stringOfCountSameSymbols = (char*) malloc(10);
+        sprintf(stringOfCountSameSymbols, "%d", symbolSameIndex);
+        int countSymbol = 0;
+        while(stringOfCountSameSymbols[countSymbol]){
+          res[strlen(res)] = stringOfCountSameSymbols[countSymbol];
+          countSymbol++;
+        }
+        free(stringOfCountSameSymbols);
+      }
+    }
+        res[strlen(res)] = '\n';
+    
+
+  curSymbolIndex++;
+  }
+printf("%i\n", strlen(res));
+  printf("RES_START\n%sRES_END", res);
+  
+  static char str[10000];
+  for ( int i = 0; i < 1000; i++) {
+    str[i] = res[i];
+  }
+return str;
+
+
 }
 
 
 int main() {
-  char str[50] = "<>><++...++---]-[----asdf3[]][[[]]>>>>>";
+  char str[50] = "[[[[+]-]--]][-]";
   char* st = interpret(str);
-  //printf("%s", st);
+  printf("%s", st);
   return 0;
 }
