@@ -12,12 +12,13 @@ int main() {
   printf("Введите кол-во элементов в строке массива: ");
   scanf("%i", &strLen);
   printf("/put для записи\n/get для чтения\n/exit для выхода\n/print для вывода\n");
-  int* arr = (int *) malloc(strLen * sizeof(int) / 2);
+  int* arr = (int *) calloc(strLen / 2, sizeof(int));
   int countStr = 1;
   char str[40];
   while(true) {
     scanf("%s", str);
     if (strcmp(str, "/exit") == 0) {
+      free(arr);
       exit(EXIT_SUCCESS);
     }
     if (strcmp(str, "/put") == 0) {
@@ -71,6 +72,7 @@ int putValue(int x, int y, int value, int strLen, int countStr, int* arr) {
 
     int curArrIndex = arrIndex(x, y, strLen);
     arr[curArrIndex] = value;
+    puts("Данные успешно добавлены");
     return countStr;
   } else {
     printf("На эту позицию записать элемент невозможно\n");
@@ -82,31 +84,33 @@ int getValue(int x, int y, int strLen, int countStr, int* arr) {
   if ((x % 2 == 1 && y % 2 == 1) ||
   (x % 2 == 0 && y % 2 == 0)) {
     if (x > countStr) {
-      return 'E';
+      printf("В матрице %i строк", countStr);
+      return 1;
     }
     if (y > strLen) {
       printf("В матрице %i столбцов", strLen);
-      return 'E';
+      return 1;
     }
 
     int index = arrIndex(x, y, strLen);
     return arr[index];
   } else {
      if (x > countStr) {
-      printf("В матрице %i строк", countStr);
-      return 'E';
+      printf("В матрице %i строкFFFFFFFF", countStr);
+      return 1;
     }
     if (y > strLen) {
       printf("В матрице %i столбцов", strLen);
-      return 'E';
+      return 1;
     }
+    return 0;
   }
 }
 
 int print(int strLen, int countStr, int* arr) {
   for (int curElIndex = 1; curElIndex <= strLen * countStr; curElIndex++) {
     printf("%i ", getValue(
-      curElIndex / strLen + 1, curElIndex % strLen, strLen, countStr, arr
+      (curElIndex - 1) / strLen + 1, (curElIndex - 1) % strLen + 1, strLen, countStr, arr
     ));
     if (curElIndex % strLen == 0) {
       printf("\n");
