@@ -4,7 +4,7 @@
 
 char* interpret(char* source) {
 
-  char string[strlen(source) + 2];
+  char* string = (char*)malloc(strlen(source));
   for(int count = 0; count < strlen(source); count++) {
     string[count] = source[count];
   }

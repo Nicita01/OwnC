@@ -1,0 +1,2 @@
+# Calculator of large factorials
+This program allows you to calculate the factorial of any large number, the result of which can not be represented by a number in any of the built-in types. The result is displayed as a string. For work, run **a.out** and enter your number.
