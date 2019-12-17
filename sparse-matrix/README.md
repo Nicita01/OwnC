@@ -2,7 +2,7 @@
 
 This program implements an optimal way of storing data from a sparse matrix. 
 
-### How it works
+### How it works 
 If the numbers in the matrix are staggered, starting with the first one, and there are zeros at the neighboring positions, there is no sense in storing the data in the usual matrix. Because there will be significant redundancy in the data. Therefore, in this program, the data is stored in an array. The user thinks that he is working with the matrix. However, this array intercept all calls, the results of which are similar to the operation of the array.
 
 ### How you can use it
